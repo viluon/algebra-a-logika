@@ -1,0 +1,154 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, bm}
+\usepackage{tcolorbox}
+\usepackage[makeroom]{cancel}
+
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+	\def\svgwidth{\columnwidth}
+	\import{./figures/}{#1.pdf_tex}
+}
+
+% style for tcolorboxes
+\tcbset{plain/.style={colbacktitle=white,coltitle=black,colback=white}}
+\pdfsuppresswarningpagegroup=1
+
+\title{BI-ALO notes}
+\begin{document}
+	\maketitle
+
+	\section{Doporučená literatura}
+	\begin{itemize}
+		\item P. Štěpánek: Matematická logika (MFF)
+		\item A. Sochor: Klasická M. L. (UK, 2003)
+		\item J. Barwise: Handbook of M. L.
+		\item F. Hausdorff: Mengerlehne (1914)
+		\item Course pages - ALO: matematická logika (PDF)
+	\end{itemize}
+
+	\section{Osnova}
+	\begin{enumerate}
+		\item Úplnost predikátové logiky
+		\item Rezoluce pro predikátovou logiku
+		\item Úvod do teorie množin
+	\end{enumerate}
+
+	\section{Formální systém pro predikátovou logiku}
+	\subsection{Redukce jazyka}
+	$\neg, \to,  \forall$ ("$(\exists x) \phi$" je zkratka za "$\neg (\forall x) \neg \phi$")
+
+	\subsection{Axiomy}
+	Pro každé formule $A, B, C$ jazyka L jsou následující formule axiomy:
+	\begin{description}
+		\item[H1] $A \to (B \to A)$
+		\item[H2] $(A \to (B \to C)) \to ((A \to B) \to (A \to C))$
+		\item[H3] $(\neg B \to \neg A) \to (A \to B)$
+		\item[S] Pro každou formuli $\phi$, proměnnou $x$ a term $t$ (substituovatelný za $x$ do $\phi$)
+			je následující formule axiom: $(\forall x) \phi \to \phi_x[t]$ ("schéma axiomu specifikace)
+		\item[P] Pro každé formule $\phi, \psi$ a proměnnou $x$ která není volná ve fli $\phi$ je
+			následující fle axiom:  $(\forall x)(\phi \to \psi) \to (\phi \to (\forall x) \psi)$
+	\end{description}
+
+	\subsection{Odvozovací pravidla}
+	\begin{description}
+		\item[MP (modus ponens)] Z formulí $\phi, \phi \to \psi$ odvoď formuli $\psi$
+		\item[G (generalizace)] Z formule $\phi$ odvoď formuli $(\forall x) \phi$
+	\end{description}
+
+	
+	\begin{description}
+		\item[Domácí úkol] napište překladač z prefixu do infixu (a naopak)
+
+		\item[Důkaz] Konečná posloupnost formulí $\phi_1, \phi_2, \ldots, \phi_n \equiv \phi$ je
+			\textit{důkaz} (v teorii $T$), pokud každá z formulí $\phi_i, i \le n$ je buďto
+			axiom, nebo formule z teorie $T$, nebo je z nějakých předchozích odvozena pomocí některého
+			z odvozovacích pravidel.
+
+			Pokud formule $\phi$ má nějaký takový důkaz, řekneme, že je \textit{dokazatelná}
+			(\textit{dokazatelná v teorii $T$}), psáno $\vdash \phi$, resp. $T \vdash \phi$.
+
+		\item[Domácí úkol] napište proof checker, který zkontroluje důkaz podle
+			definice výše.
+
+		\item[Teorie] Libovolná množina formulí v nějakém jazyce $L$ se nazývá \textit{teorie}.
+			\begin{itemize}
+				\item Teorie grup v jazyce $+, -, 0$:
+					\begin{enumerate}
+						\item $(\forall x)(\forall y)(\forall z) ((x + y) + z = x + (y + z))$
+						\item $(\forall x) (x + 0 = x = 0 + x)$ 
+						\item $(\forall x) (x + (-x) = 0)$
+					\end{enumerate}
+					Modely této teorie se nazývají "grupy:"
+					$(\mathbb{Z}, +, -, 0), (\mathbb{R}^+, +, \cdot^{-1}, 1)$
+				\item Teorie uspořádání v jazyce $<$
+					 \begin{enumerate}
+						 \item $(\forall x) \neg (x < x)$
+						 \item $(\forall x)(\forall y)(\forall z) (x < y \land y < z \to x < z)$
+					\end{enumerate}
+					Modely této teorie jsou "uspořádané množiny:"
+					$(\mathbb{R}, <), (P(\mathbb{N}), \subset), \ldots$
+			\end{itemize}
+		\item[Věta o korektnosti] Buď $T$ teorie v jazyce $L$ a $\phi$ nějaká formule $L$.
+			Potom pokud je $\phi$ dokazatelná v teorii $T$, pak platí v každém jejím modelu.
+			Jinými slovy, $(T \vdash \phi) \to (T \models \phi)$.
+			\begin{description}
+				\item[Důkaz] Buď $\phi_1, \phi_2, \ldots, \phi_n \equiv \phi$ formální důkaz formule
+					$\phi$ v teorii $T$. Buď $M \models T$ lib. model.
+					Indukcí pro $\phi_i, i \le n$ ukážeme, že $\phi_i$ platí v $M$ při
+					každém ohodnocení.
+					\begin{enumerate}
+						\item Pro formuli $\phi_i \in T$, je $M \models \phi_i$ z definice. 
+						\item Je-li $\phi_i$ axiomem výrokové logiky, tak je to tautologie,
+							takže platí (dokonce) v každé realizaci jazyka $M \models L$.
+						\item Je-li $\phi_i$ axiomem specifikace tvaru
+							$((\forall x) \psi) \to \psi_x[t]$: buď BÚNO
+							$M \models (\forall x) \psi$. To znamená, že $M \models \psi[e(x/m)]$ 
+							pro každé ohodnocení $e$ a každé $m \in M$, speciálně pro
+							$t[e] \in M$. To ale znamená, že $M \models \psi[e(x/t)]$,
+							neboli $M \models (\psi_x[t])[e]$.
+						\item Je-li $\phi_i$ axiom tvaru
+							$(\forall x)(\psi \to V) \to (\psi \to (\forall x)V)$,
+							kde $x$ není volná v $\psi$: buď $M \models (\forall x)(\psi \to V)$.
+							To znamená,, že pro každé $m \in M$ je
+							$M \models (\psi \to V)[e(x/m)]$, tj. buďto
+							$M \cancel{\models} \psi[e(x/m)]$ nebo $M \models V[e(x/m)]$.
+							Přitom pro $M \cancel{\models} \phi[e(x/m)]$ je $M \models \phi[e]$.
+							Tedy buďto  $M \cancel{\models} \phi[e]$ nebo $M \models (\forall x)V[e]$,
+							každopádně $M \models (\phi \to (\forall x)V)[e]$.
+						\item Je-li $\phi_i$ některý z \textit{axiomů rovnosti}, je dokonce
+							$M \models \phi_i$ pro každý $M \models L$.
+						\item Pokud $\phi_i$ vznikla z předchozích $\phi_j, \phi_j \to \phi_i$ pomocí
+							MP, přičemž pro fle $\phi_j, \phi_j \to \phi_i$ už máme $M \models \phi_j$,
+							$M \models \phi_j \to \phi_i$ je z definice taktéž $M \models \phi_i$ 
+						\item Pokud $\phi_i$ vznikla z nějaké předchozí $\phi_j$ jako $(\forall x)\phi_j$ 
+							pomocí G, přičemž pro $\phi_j$ už máme $M \models \phi_j$, je
+							$M \models \phi_j[e]$ pro každé ohodnocení, tedy speciálně
+							$M \models \phi_j[e(x/m)]$ pro každé $m \in M$, to znamená
+							právě $M \models (\forall x) \phi_j[e]$.
+					\end{enumerate}
+				\item[Symetrická grupa] značena $S_M : \{\pi : M \to M | \pi \text{
+					je permutace, tj. prostá a na}\}$, na příklad $S_{\{1, 2, 3\}}$
+				\item[Příklad] formule $(\forall x)(\forall y)(x + y = y + x)$ \textit{není} dokazatelná
+					v teorii grup. Například $(S_{\{1, 2, 3\}}, \circ, \cdot^{-1}, \text{id})$
+					je nekomutativní grupa: \begin{align*}
+						(1 3 2) \circ (3 1 2) &= (3 2 1) \\
+						(3 1 2) \circ (1 3 2) &= (2 1 3)
+					.\end{align*}
+					Stejně tak ale teorie grup nedokazuje formuli
+					$\neg (\forall x)(\forall y)(x + y = y + x)$.
+					$(T \cancel{\vdash} \phi) \land (T \cancel{\vdash} \neg \phi)$.
+			\end{description}
+	\end{description}
+
+
+\end{document}
