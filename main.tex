@@ -7,6 +7,7 @@
 \usepackage{amsmath, amssymb, bm}
 \usepackage{tcolorbox}
 \usepackage[makeroom]{cancel}
+\usepackage{csquotes}
 
 % figure support
 \usepackage{import}
@@ -147,6 +148,142 @@
 					Stejně tak ale teorie grup nedokazuje formuli
 					$\neg (\forall x)(\forall y)(x + y = y + x)$.
 					$(T \cancel{\vdash} \varphi) \land (T \cancel{\vdash} \neg \varphi)$.
+			\end{description}
+		\item[Věta o úplnosti] (Kurt Gödel, 1929; Henkin, 1947) Buď $L$ jazyk predikátové logiky,
+			buď $T$ teorie v $L$, buď $\varphi$ formule jazyka $L$. Potom $T \vdash \varphi$ právě
+			když $T \models \varphi$. (Směr zleva doprava je známý z \textit{věty o korektnosti}.)
+		\item[Věta] Teorie je bezesporná právě když má model. (V této větě dokazuje
+			věta o korektnosti směr zprava doleva.)
+			\begin{description}
+				\item[důkaz] Buď $T \models \varphi$; chceme ukázat, že $T \vdash \varphi$.
+					Kdyby ne, pak $T, \neg \varphi$ je bezesporná, tedy má model
+					$M \models T \cup \{\neg \varphi\}$. To je model $M \models T$,
+					ve kterém $M \not \models \varphi$.
+				\item[idea pro konstrukci modelu] Universum budou tvořit
+					konstantní termy. Konstanty realizují samy sebe.
+					Pro funkční symbol $f$ buď $f(t_1, \ldots, t_n)$ konstantní term.
+					Pro relační symbol $R$ buď $M \models R(t_1, \ldots, t_n) \iff
+					T \vdash R(t_1, \ldots, t_n)$. Tyto pravidla přináší několik
+					problémů:
+					\begin{enumerate}
+						\item Pokud $L$ nemá konstanty, je tento \enquote{model} prázdný.
+						\item Pro dva různé konstantní termy $s, t$ může být
+							$T \vdash (s = t)$.
+						\item Pro uzavřenou $\varphi$ musí být $M \models \varphi$ nebo
+							$M \models \neg \varphi$. Přitom nemusí $T \vdash \varphi$
+							ani $T \vdash \neg \varphi$.
+						\item Pokud $T \vdash (\exists x) \varphi(x)$, potřebujeme
+							$T \vdash \varphi_x[c]$.
+					\end{enumerate}
+				\item[Definice] Teorie $T$ v jazyce $L$ je \textit{úplná}, pokud pro
+					každou uzavřenou formuli $\varphi$ jazyka $L$ je buďto $T \vdash \varphi$
+					nebo $T \vdash \neg \varphi$. Jinak je $T$ \textit{neúplná} a
+					$\varphi$ je \textit{nerozhodnutelná}. \textbf{Úplná teorie
+					je bezesporná}.
+					\begin{description}
+						\item[příklady] \enquote{Typická} teorie je neúplná.
+							\begin{enumerate}
+								\item Teorie grup je neúplná: nerozhoduje sentenci
+									$(\forall x)(\forall y)(x + y = y + x)$
+								\item Teorie hustých lineárních neomezených uspořádání
+									je úplná (\enquote{ve všech modelech platí to, co v $\mathbb{R}$})
+								\item $Th(W, +, *, 0, 1)$, nebo obecně
+									$Th(M) = \{\varphi : M \models \varphi \text{ uzavřená}\}$
+							\end{enumerate}
+					\end{description}
+				\item[Definice] Teorie $T$ je \textit{Henkinovská}, pokud pro každou existenční
+					sentenci tvaru $(\exists x) \varphi(x)$ existuje v jazyce teorie $T$
+					nějaká konstanta $c$ taková, že
+					$T \vdash ((\exists x) \varphi(x) \implies \varphi_x[c])$.
+					(Henkinovské konstanty jsou \textit{svědci existence}.)
+
+					Například teorie uspořádání v jazyce $\le$ \textit{není} Henkinovská:
+					nemá svědčící konstantu pro $(\exists x)(\forall y)(x \le y)$.
+					Můžeme do jazyka přidat konstantu \enquote{$0$} a do teorie
+					přidat axiom $(\exists x)(\forall y)(x \le y) \implies (\forall y)(0 \le y)$.
+					(Ta \textit{stále není Henkinovská}.)
+				\item[Věta (Henkin)] Každá úplná bezesporná Henkinovská teorie \textit{má} model.
+					\begin{description}
+						\item[důkaz] Buď $\tau$ množina konstantních termů jazyka $L$ teorie $T$.
+							Pro term $t \in \tau$ buď $[t] = \{s \in \tau : T \vdash s = t\}$ jeho
+							\enquote{ekvivalenční třída.} Nosnou množinou $M$ (neboli \textit{universem})
+							hledaného modelu $\mathbb{M}$ bude právě množina těchto ekvivalenčních tříd
+							$[t]$.
+
+							Realizace jazyka $L$:
+							\begin{itemize}
+								\item Pro konstantu $\le$ jazyka $L$ je $c^{\mathbb{M}}$ prvek
+									$[c] \in M$.
+								\item pro n-ární funkční symbol $f$ a prvky
+									$[t_1], [t_2], \ldots, [t_n] \in M$ buď
+									$f^{\mathbb{M}}\left( [t_1], \ldots, [t_n] \right)$
+									prvek $[f(t_1, \ldots, t_n)] \in M$.
+								\item pro n-ární predikát $R$ a prvky $[t_1], \ldots, [t_n] \in M$ 
+									buď $R^{\mathbb{M}}([t_1], \ldots, [t_n]) \iff
+									T \vdash R(t_1, \ldots, t_n)$
+							\end{itemize}
+						\item[Fakt] Definice výše nezávisí na reprezentantech (resp. volbě reprezentantů).
+							Tj. pro $[s_i] = [t_i]$, tj. $s_i \in [t_i]$, tj $T \vdash s_i = t_i$ 
+							je $f^{\mathbb{M}}([s_1], \ldots, [s_n])$ individuum $[f(s_1, \ldots, s_n)]$,
+							což je tentýž objekt jako $[f(t_1, \ldots, t_n)]$.
+						\item[důkaz - pokračování] Ukážeme, že tato struktura
+							$\mathbb{M} =
+							(M, c^{\mathbb{M}}, \ldots, f^{\mathbb{M}}, \ldots, R^{\mathbb{M}}, \ldots)$
+							\textit{je} modelem $T$, tj. že každý axiom teorie $T$ je v $\mathbb{M}$ 
+							splněn. Ve skutečnosti ukážeme, že pro každou uzavřenou formuli
+							$\varphi$ jazyka $L$ je $\mathbb{M} \models \varphi \iff T \vdash \varphi$
+							(indukcí).
+							\begin{enumerate}
+								\item Pro $\varphi$ tvaru $t_1 = t_2$ je $\mathbb{M} \models \varphi$
+									právě když $[t_1]$ a $[t_2]$ je stejný prvek nosné
+									množiny $M$. To je právě když $T \vdash (t_1 = t_2)$.
+								\item Pro $\varphi$ tvaru $R(t_1, \ldots, t_n)$ je
+									$\mathbb{M} \models \varphi$ právě když $T \vdash R(t_1, \ldots, t_n)$.
+									($T$ je bezesporná!)
+								\item Pro $\varphi$ tvaru $\neg \psi$, kde pro $\psi$ je
+									již tvrzení dokázáno:
+									\begin{align*}
+										&\mathbb{M} \models \varphi \\
+										\iff& \mathbb{M} \models \neg \psi \\
+										\iff& \mathbb{M} \not \models \psi \\
+										\iff& T \not \vdash \psi \\
+										\iff& T \vdash \neg \psi
+									.\end{align*}
+								\item Pro $\varphi$ tvaru $\psi \implies \vartheta$, tj.
+									$\mathbb{M} \models (\psi \implies \vartheta)$, právě když
+									$\mathbb{M} \not \models \psi$ nebo $\mathbb{M} \models \vartheta$,
+									tj. právě když $T \not \vdash \psi$ (čili $T \vdash \neg \psi$)
+									nebo $T \vdash \vartheta$, to je právě když
+									$T \vdash (\psi \implies \vartheta)$:
+									\begin{enumerate}
+										\item Je-li $T \vdash \neg \psi$, použijeme
+											$\vdash \neg \psi \implies (\psi \implies \vartheta)$ a MP
+											dává $T \vdash \psi \implies \vartheta$
+										\item Je-li $T \vdash \psi$, použijeme H1
+											$\vartheta \implies (\psi \implies \vartheta)$ a MP
+											dává $T \vdash \psi \implies \vartheta$
+									\end{enumerate}
+								\item Pro $\varphi$ tvaru $(\forall x) \psi$, přičemž pro všechny
+									instance formule  $\psi$ už je tvrzení dokázáno.
+									Z úplnosti je buďto $T \vdash \varphi$ nebo $T \vdash \neg \varphi$.
+									\begin{enumerate}
+										\item Je-li $T \vdash \varphi$, tj. $T \vdash (\forall x) \psi$,
+										použijeme axiom S a dostaneme $T \vdash \psi_x[t]$ pro každý term,
+										tj. $\mathbb{M} \models \psi[e(x/[t])]$ pro každé $[t] \in M$,
+										tj. $\mathbb{M} \models (\forall x) \psi$.
+										\item Je-li naopak $T \vdash \neg \varphi$, tj.
+											$T \vdash \neg (\forall x) \psi$, tj.
+											$T \vdash (\exists x) \neg \psi$, (\textbf{Henkin}) tedy
+											máme konstantu $c \in L$ takovou, že
+											$T \vdash ((\exists x) \neg \psi \implies \neg \psi_x[c])$,
+											MP dává $T \vdash \neg \psi_x[c]$, čili
+											$\mathbb{M} \models (\exists x) \neg \psi$, tj.
+											$\mathbb{M} \models \neg (\forall x) \psi$.
+									\end{enumerate}
+							\end{enumerate}
+						\item[domácí úkol] \enquote{free algebra,} např. volný monoid $A*$ slov
+							nad abecedou $A$ s operací zřetězení a neutrálním prvkem $\varepsilon$.
+					\end{description}
 			\end{description}
 	\end{description}
 
